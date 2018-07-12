@@ -27,25 +27,35 @@
 
     // getting the URL (you may want to use for Exercise 3)
     var url = window.location.href;
-
-    // var socket = new WebSocket(
-    //     'ws://your url here:8765/');
     
     // create a new websocket connecting to the server
-    var socket = new WebSocket('ws://p4-ccuellar2007-ccuellar200725495.codeanyapp.com/:8765/');
+    var socket = new WebSocket('ws://p4-ccuellar2007-ccuellar200725495.codeanyapp.com:8765/');
 
+    socket.onopen = function(event) {
+      console.log("I am communicating with the server");
+    };
+
+    var myPath = new paper.Path();
+    myPath.strokeColor = 'black';
+  
+    tool.onMouseDrag = function(event) {
+      myPath.add(event.point);
+      socket.send(event.point);
+    };  
+  
     // triggered when receiving a message from the server
     socket.onmessage = function(receivedMessage) {
 	  // do something when you receive a message
+      console.log(receivedMessage);
     };
-
-    // use when sending a message to the server
-    // to be broadcasted to all clients
-    socket.send(message);
+  
+    socket.onerror = function(error) {
+      console.log("WebSocket Error " + error);
+    };
 
     // notify console if socket closes unexpectedly
     socket.onclose = function(e) {
-      console.error('Chat socket closed unexpectedly');
+      console.log('Chat socket closed unexpectedly');
     };
 
 
