@@ -98,33 +98,37 @@
   
     // Triggered when receiving a message from the server
     socket.onmessage = function(receivedMessage) {
-      console.log(receivedMessage);
-      var x = receivedMessage.data.split("$")[0];
-      var y = receivedMessage.data.split("$")[1];
-      var userID = receivedMessage.data.split("$")[2];
-      
-      // Large Display always wants to update with the drawings from the invidual devices.
-      if (size == "large") {
-        if (userID in paths) {
-          paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
+      if (receivedMessage.data == "shake") {
+        for (key in paths) {
+          paths[key].removeSegments();
         }
-        else {
-          paths[userID] = new paper.Path();
-          paths[userID].strokeColor = userID;
-          paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
-        }
-      }
-      // I am a small invidual display (phone).
-      else {
-        // I only want to update if my id is equal to the userID I'm receiving.
-        if (userID == id) {
-          if (id in paths) {
-            paths[id].add(new paper.Point(parseInt(x), parseInt(y)));
+      } else {
+        var x = receivedMessage.data.split("$")[0];
+        var y = receivedMessage.data.split("$")[1];
+        var userID = receivedMessage.data.split("$")[2];
+        // Large Display always wants to update with the drawings from the invidual devices.
+        if (size == "large") {
+          if (userID in paths) {
+            paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
           }
           else {
-            paths[id] = new paper.Path();
-            paths[id].strokeColor = id;
-            paths[id].add(new paper.Point(parseInt(x), parseInt(y)));
+            paths[userID] = new paper.Path();
+            paths[userID].strokeColor = userID;
+            paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
+          }
+        }
+        // I am a small invidual display (phone).
+        else {
+          // I only want to update if my id is equal to the userID I'm receiving.
+          if (userID == id) {
+            if (id in paths) {
+              paths[id].add(new paper.Point(parseInt(x), parseInt(y)));
+            }
+            else {
+              paths[id] = new paper.Path();
+              paths[id].strokeColor = id;
+              paths[id].add(new paper.Point(parseInt(x), parseInt(y)));
+            }
           }
         }
       }
@@ -149,8 +153,7 @@
       var y = event.accelerationIncludingGravity.y;
       var z = event.accelerationIncludingGravity.z;
       // Do something awesome.
-      socket.send("Hello!");
+      socket.send("shake");
     }
-
 </script>
 </html>
