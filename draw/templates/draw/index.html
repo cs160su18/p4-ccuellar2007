@@ -39,19 +39,14 @@
     myPath.strokeColor = 'black';
   
     tool.onMouseDrag = function(event) {
-      myPath.add(event.point);
-      socket.send(event.point);
+      socket.send(event.point.x + "," + event.point.y);
     };  
   
     // triggered when receiving a message from the server
     socket.onmessage = function(receivedMessage) {
-	  // do something when you receive a message
-//       var jsonObj = JSON.stringify(eval("(" + receivedMessage.data + ")"));
-//       console.log(jsonObj[]);
-      strOps = receivedMessage.data.split(" ")[2] + receivedMessage.data.split(" ")[4]
-      console.log(strOps);
-      console.log(strOps.indexOf(","));
-      myPath.add(new Paper.point(strOps.slice(0, strOps.indexOf(",")), strOps.slice(strOps.indexOf(",") + 1)));
+      var x = receivedMessage.data.split(",")[0];
+      var y = receivedMessage.data.split(",")[1];
+      myPath.add(new paper.Point(parseInt(x), parseInt(y)));
     };
   
     socket.onerror = function(error) {
