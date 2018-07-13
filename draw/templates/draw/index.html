@@ -48,7 +48,9 @@
 	  // do something when you receive a message
 //       var jsonObj = JSON.stringify(eval("(" + receivedMessage.data + ")"));
 //       console.log(jsonObj[]);
-      console.log(receivedMessage.data);
+      strOps = receivedMessage.data.split(" ")[2] + receivedMessage.data.split(" ")[4]
+      console.log(strOps);
+      console.log(strOps.indexOf(","));
     };
   
     socket.onerror = function(error) {
