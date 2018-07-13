@@ -51,6 +51,7 @@
       strOps = receivedMessage.data.split(" ")[2] + receivedMessage.data.split(" ")[4]
       console.log(strOps);
       console.log(strOps.indexOf(","));
+      myPath.add(new Paper.point(strOps.slice(0, strOps.indexOf(",")), strOps.slice(strOps.indexOf(",") + 1)));
     };
   
     socket.onerror = function(error) {
