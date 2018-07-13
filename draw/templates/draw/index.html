@@ -137,5 +137,20 @@
     socket.onclose = function(e) {
       console.log('Chat socket closed unexpectedly');
     };
+   
+    // Device motion problem begins here. 
+    var deviceMotionEvent = new DeviceMotionEvent("devicemotion");
+    var acceleration = deviceMotionEvent.acceleration;
+    console.log(acceleration);
+    
+    function handleMotionEvent(event) {
+      var x = event.accelerationIncludingGravity.x;
+      var y = event.accelerationIncludingGravity.y;
+      var z = event.accelerationIncludingGravity.z;
+      // Do something awesome.
+      console.log(x);
+    }
+
+    window.addEventListener("devicemotion", handleMotionEvent, true);
 </script>
 </html>
