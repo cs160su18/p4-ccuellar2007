@@ -32,21 +32,80 @@
     var socket = new WebSocket('ws://p4-ccuellar2007-ccuellar200725495.codeanyapp.com:8765/');
 
     socket.onopen = function(event) {
-      console.log("I am communicating with the server");
+      console.log("The server is open and ready for business.");
     };
-
-    var myPath = new paper.Path();
-    myPath.strokeColor = 'black';
+      
+    Colors = {};
+    Colors.names = {
+      black: "#000000",
+      blue: "#0000ff",
+      brown: "#a52a2a",
+      darkblue: "#00008b",
+      darkgrey: "#a9a9a9",
+      darkgreen: "#006400",
+      darkorange: "#ff8c00",
+      darkred: "#8b0000",
+      darksalmon: "#e9967a",
+      darkviolet: "#9400d3",
+      gold: "#ffd700",
+      green: "#008000",
+      lightblue: "#add8e6",
+      lightcyan: "#e0ffff",
+      lightgreen: "#90ee90",
+      lightgrey: "#d3d3d3",
+      lightpink: "#ffb6c1",
+      magenta: "#ff00ff",
+      maroon: "#800000",
+      navy: "#000080",
+      olive: "#808000",
+      orange: "#ffa500",
+      pink: "#ffc0cb",
+      purple: "#800080",
+      violet: "#800080",
+      red: "#ff0000",
+      silver: "#c0c0c0",
+      yellow: "#ffff00"
+    };
   
+    Colors.random = function() {
+    var result;
+    var count = 0;
+    for (var prop in this.names)
+        if (Math.random() < 1/++count)
+           result = prop;
+    return result;
+    };
+  
+//     var myPath = new paper.Path();
+//     myPath.strokeColor = Colors.random();
+  
+    var paths = {
+    };
+  
+    id = Colors.random();
     tool.onMouseDrag = function(event) {
-      socket.send(event.point.x + "," + event.point.y);
-    };  
+      socket.send(event.point.x + "$" + event.point.y + "$" + id);
+    };
+  
+    colors = JSON.stringify(Colors.names);
   
     // triggered when receiving a message from the server
     socket.onmessage = function(receivedMessage) {
-      var x = receivedMessage.data.split(",")[0];
-      var y = receivedMessage.data.split(",")[1];
-      myPath.add(new paper.Point(parseInt(x), parseInt(y)));
+      var x = receivedMessage.data.split("$")[0];
+      var y = receivedMessage.data.split("$")[1];
+      var userID = receivedMessage.data.split("$")[2];
+      
+      console.log(userID);
+      console.log(paths);
+      
+      if (userID in paths) {
+        paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
+      }
+      else {
+        paths[userID] = new paper.Path();
+        paths[userID].strokeColor = userID;
+        paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
+      }
     };
   
     socket.onerror = function(error) {
