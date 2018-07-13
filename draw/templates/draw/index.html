@@ -24,17 +24,16 @@
     var canvas = document.getElementById('myCanvas');
     paper.setup(canvas);
     var tool = new paper.Tool();
-
-    // getting the URL (you may want to use for Exercise 3)
-    var url = window.location.href;
     
-    // create a new websocket connecting to the server
+    // Creates a new websocket connecting to the server
     var socket = new WebSocket('ws://p4-ccuellar2007-ccuellar200725495.codeanyapp.com:8765/');
 
+    // This lets us know that the connection is now open
     socket.onopen = function(event) {
       console.log("The server is open and ready for business.");
     };
-      
+    
+    // We needed a large list of colors so that picking a random color multiple times will generate different colors for the different users
     Colors = {};
     Colors.names = {
       black: "#000000",
@@ -67,6 +66,7 @@
       yellow: "#ffff00"
     };
   
+    // Function that picks a random color from the list of colors
     Colors.random = function() {
     var result;
     var count = 0;
@@ -76,24 +76,33 @@
     return result;
     };
   
+    // This is an object that maps colors to paths!! The critical data structure that allows different browsers to paint in different colors.
+    // Paths gets filled in the socket.onmessage method.
     var paths = {
     };
    
+    // Different broswers are id'd by the color returned from Colors.random(), this is pretty important.
     id = Colors.random();
+  
+    // When I drag the mouse I'm sending the x and y values as well as the id (which is just a color value unique to browser window).
+    // These values are delimited by a dollar sign which I splice on later.
     tool.onMouseDrag = function(event) {
       socket.send(event.point.x + "$" + event.point.y + "$" + id);
     };
   
+    // Identifying the different browsers.
+    // The broswers simulating phones have ?size=small appended to the url.
+    // The browser simulating the large display has ?size=large appended to the url.
     var myUrl = new URL(window.location.href);
     var size = myUrl.searchParams.get("size");
-    console.log(size);
   
-    // triggered when receiving a message from the server
+    // Triggered when receiving a message from the server
     socket.onmessage = function(receivedMessage) {
       var x = receivedMessage.data.split("$")[0];
       var y = receivedMessage.data.split("$")[1];
       var userID = receivedMessage.data.split("$")[2];
       
+      // Large Display always wants to update with the drawings from the invidual devices.
       if (size == "large") {
         if (userID in paths) {
           paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
@@ -104,7 +113,9 @@
           paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
         }
       }
+      // I am a small invidual display (phone).
       else {
+        // I only want to update if my id is equal to the userID I'm receiving.
         if (userID == id) {
           if (id in paths) {
             paths[id].add(new paper.Point(parseInt(x), parseInt(y)));
@@ -126,7 +137,5 @@
     socket.onclose = function(e) {
       console.log('Chat socket closed unexpectedly');
     };
-
-
 </script>
 </html>
