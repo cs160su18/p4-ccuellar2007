@@ -87,17 +87,12 @@
       socket.send(event.point.x + "$" + event.point.y + "$" + id);
     };
   
-    colors = JSON.stringify(Colors.names);
-  
     // triggered when receiving a message from the server
     socket.onmessage = function(receivedMessage) {
       var x = receivedMessage.data.split("$")[0];
       var y = receivedMessage.data.split("$")[1];
       var userID = receivedMessage.data.split("$")[2];
-      
-      console.log(userID);
-      console.log(paths);
-      
+   
       if (userID in paths) {
         paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
       }
