@@ -46,7 +46,9 @@
     // triggered when receiving a message from the server
     socket.onmessage = function(receivedMessage) {
 	  // do something when you receive a message
-      console.log(receivedMessage);
+//       var jsonObj = JSON.stringify(eval("(" + receivedMessage.data + ")"));
+//       console.log(jsonObj[]);
+      console.log(receivedMessage.data);
     };
   
     socket.onerror = function(error) {
