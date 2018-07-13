@@ -78,25 +78,43 @@
   
     var paths = {
     };
-  
+   
     id = Colors.random();
     tool.onMouseDrag = function(event) {
       socket.send(event.point.x + "$" + event.point.y + "$" + id);
     };
+  
+    var myUrl = new URL(window.location.href);
+    var size = myUrl.searchParams.get("size");
+    console.log(size);
   
     // triggered when receiving a message from the server
     socket.onmessage = function(receivedMessage) {
       var x = receivedMessage.data.split("$")[0];
       var y = receivedMessage.data.split("$")[1];
       var userID = receivedMessage.data.split("$")[2];
-   
-      if (userID in paths) {
-        paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
+      
+      if (size == "large") {
+        if (userID in paths) {
+          paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
+        }
+        else {
+          paths[userID] = new paper.Path();
+          paths[userID].strokeColor = userID;
+          paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
+        }
       }
       else {
-        paths[userID] = new paper.Path();
-        paths[userID].strokeColor = userID;
-        paths[userID].add(new paper.Point(parseInt(x), parseInt(y)));
+        if (userID == id) {
+          if (id in paths) {
+            paths[id].add(new paper.Point(parseInt(x), parseInt(y)));
+          }
+          else {
+            paths[id] = new paper.Path();
+            paths[id].strokeColor = id;
+            paths[id].add(new paper.Point(parseInt(x), parseInt(y)));
+          }
+        }
       }
     };
   
