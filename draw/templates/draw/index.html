@@ -102,6 +102,14 @@
         for (key in paths) {
           paths[key].removeSegments();
         }
+      } 
+      else if (receivedMessage.data.split("$")[0] == "tilt") {
+        received_id = receivedMessage.data.split("$")[1];
+        for (key in paths) {
+          if (key == received_id) {
+            paths[key].strokeColor = Colors.random();
+          }
+        }
       } else {
         var x = receivedMessage.data.split("$")[0];
         var y = receivedMessage.data.split("$")[1];
@@ -142,8 +150,7 @@
       console.log('Chat socket closed unexpectedly');
     };
    
-    // Device motion problem begins here. 
-//     var deviceMotionEvent = new DeviceMotionEvent("devicemotion");
+    // Shake to clear screen.
     if (window.DeviceMotionEvent) {
       window.addEventListener('devicemotion', function(event) {
         var x = event.acceleration.x;
@@ -154,15 +161,20 @@
         }
       }, false);
     }
-    
   
-//     window.ondevicemotion = function(event) {
-//       var x = event.accelerationIncludingGravity.x;
-//       var y = event.accelerationIncludingGravity.y;
-//       var z = event.accelerationIncludingGravity.z;
-//       // Do something awesome.
-//       socket.send("shake");
-//     }
+    // Tilt phone to the right and change the stroke color
+    if (window.DeviceMotionEvent) {
+      window.addEventListener('deviceorientation', function(event) {
+        if (event.gamma > 70) {
+//           socket.send("tilt$" + id);
+          paths[id].strokeColor = Colors.random();
+        }
+      }, false);
+    }
+    
+    
+    
+
   
 </script>
 </html>
