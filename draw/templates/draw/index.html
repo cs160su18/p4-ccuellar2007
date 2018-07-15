@@ -102,14 +102,6 @@
         for (key in paths) {
           paths[key].removeSegments();
         }
-      } 
-      else if (receivedMessage.data.split("$")[0] == "tilt") {
-        received_id = receivedMessage.data.split("$")[1];
-        for (key in paths) {
-          if (key == received_id) {
-            paths[key].strokeColor = Colors.random();
-          }
-        }
       } else {
         var x = receivedMessage.data.split("$")[0];
         var y = receivedMessage.data.split("$")[1];
@@ -166,7 +158,6 @@
     if (window.DeviceMotionEvent) {
       window.addEventListener('deviceorientation', function(event) {
         if (event.gamma > 70) {
-//           socket.send("tilt$" + id);
           paths[id].strokeColor = Colors.random();
         }
       }, false);

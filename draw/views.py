@@ -4,6 +4,12 @@ import json
 
 def index(request):
     return render(request, 'draw/index.html', {})
+  
+def map(request):
+    return render(request, 'draw/map.html', {})
+  
+def phone(request):
+    return render(request, 'draw/phone.html', {})
 
 def room(request, room_name):
     return render(request, 'draw/room.html', {
